@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interfaces;
 using WebApi.Models;
+using WebApi.Models.Response;
 using WebApi.Requests;
 
 namespace WebApi.Services;
@@ -17,11 +18,18 @@ public class ImageService : IImagesService
     public async Task<IActionResult> GetAllImagesAsync()
     {
         await _supabaseClient.InitializeAsync();
-        var imagesResponse = await _supabaseClient.From<Image>().Get();
+        var imageResponse = await _supabaseClient.From<Image>().Get();
 
+        var data = imageResponse.Models.Select(img => new ImageResponse
+        {
+            Id = img.Id,
+            Name = img.Name,
+            ImageUrl = img.ImageUrl
+        }).ToList();
+        
         return new OkObjectResult(new
         {
-            data = new { images = imagesResponse.Models },
+            data = new { image = data },
             status = true
         });
     }

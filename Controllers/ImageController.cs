@@ -4,9 +4,7 @@ using WebApi.Requests;
 
 namespace WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ImageController : ControllerBase
+public class ImageController
 {
     private readonly IImagesService _imagesService;
 
@@ -15,13 +13,15 @@ public class ImageController : ControllerBase
         _imagesService = imagesService;
     }
 
-    [HttpGet("GetAllImages")]
+    [HttpGet]
+    [Route("GetAllImages")]
     public Task<IActionResult> GetAllImagesAsync()
     {
         return _imagesService.GetAllImagesAsync();
     }
 
-    [HttpPost("PostImage")]
+    [HttpPost]
+    [Route("PostImage")]
     public Task<IActionResult> PostImageAsync([FromBody] CreateNewImage newImage)
     {
         return _imagesService.PostImageAsync(newImage);

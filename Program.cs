@@ -20,6 +20,18 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImagesService, ImageService>();
 
+// Cors
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorWasm", policy =>
+    {
+        policy.WithOrigins("http://localhost:5129")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -31,6 +43,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Cors
+app.UseCors("AllowBlazorWasm");
 
 app.UseHttpsRedirection();
 app.MapControllers();
