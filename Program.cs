@@ -1,18 +1,39 @@
+using Supabase;
+using WebApi.Interfaces;
+using WebApi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Connecting Supabase
+var supabaseUrl = builder.Configuration["Supabase:Url"];
+var supabaseKey = builder.Configuration["Supabase:Key"];
+
+var options = new SupabaseOptions
+{
+    AutoConnectRealtime = true
+};
+
+builder.Services.AddScoped<Supabase.Client>(_ => 
+    new Supabase.Client(supabaseUrl, supabaseKey, options));
+
+// Controllers + services
+builder.Services.AddControllers();
+builder.Services.AddScoped<IImagesService, ImageService>();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 var summaries = new[]
 {
