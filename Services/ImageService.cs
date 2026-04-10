@@ -22,7 +22,6 @@ public class ImageService : IImagesService
 
         var data = imageResponse.Models.Select(img => new ImageResponse
         {
-            Id = img.Id,
             Name = img.Name,
             ImageUrl = img.ImageUrl
         }).ToList();
@@ -36,19 +35,46 @@ public class ImageService : IImagesService
 
     public async Task<IActionResult> PostImageAsync(CreateNewImage newImage)
     {
-        await _supabaseClient.InitializeAsync();
-
-        var image = new Image
+        try
         {
-            Name = newImage.Name,
-            ImageUrl = newImage.ImageUrl
-        };
+            if (newImage.File == null || newImage.File.Length == 0)
+                return new BadRequestObjectResult(new { status = false, message = "Файл не передан" });
 
-        await _supabaseClient.From<Image>().Insert(image);
+            await _supabaseClient.InitializeAsync();
 
-        return new OkObjectResult(new
-        {
-            status = true
-        });
+            var ext = Path.GetExtension(newImage.File.FileName);
+            var path = $"images/{Guid.NewGuid()}{ext}";
+            using var stream = newImage.File.OpenReadStream();
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            await _supabaseClient.Storage.From("Storage").Upload(memoryStream.ToArray(), path);
+
+            var url = $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/Storage/{path}";
+
+            var image = new Image
+            {
+                Name = newImage.Name,
+                ImageUrl = url
+            };
+
+            await _supabaseClient.From<Image>().Insert(image);
+
+            return new OkObjectResult(new
+            {
+                status = true
+            });
+        }
+        catch (Exception e)
+        {   
+            return new ObjectResult(new 
+            { 
+                error = e.Message, 
+                inner = e.InnerException?.Message,
+                stack = e.StackTrace?.Split('\n').FirstOrDefault() 
+            }) 
+            { 
+                StatusCode = 500 
+            };
+        }
     }
 }

@@ -22,7 +22,7 @@ public class ImageController
 
     [HttpPost]
     [Route("PostImage")]
-    public Task<IActionResult> PostImageAsync([FromBody] CreateNewImage newImage)
+    public Task<IActionResult> PostImageAsync([FromForm] CreateNewImage newImage)
     {
         return _imagesService.PostImageAsync(newImage);
     }

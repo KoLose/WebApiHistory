@@ -6,5 +6,5 @@ namespace WebApi.Interfaces;
 public interface IImagesService
 {
     Task<IActionResult> GetAllImagesAsync();
-    Task<IActionResult> PostImageAsync(CreateNewImage newImage);
+    Task<IActionResult> PostImageAsync(CreateNewImage request);
 }
