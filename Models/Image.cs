@@ -8,7 +8,7 @@ public class Image : BaseModel
 {
     [PrimaryKey("id", false)]
     [Column("id")]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     [Column("name")]
     public string Name { get; set; }

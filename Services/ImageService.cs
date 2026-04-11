@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interfaces;
 using WebApi.Models;
@@ -51,8 +52,12 @@ public class ImageService : IImagesService
 
             var url = $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/Storage/{path}";
 
+            Random rnd = new Random();
+            int id = rnd.Next(0, 1_000_000);
+                
             var image = new Image
             {
+                Id = id,
                 Name = newImage.Name,
                 ImageUrl = url
             };
