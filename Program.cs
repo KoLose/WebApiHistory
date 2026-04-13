@@ -19,6 +19,18 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
 // Controllers + services
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImagesService, ImageService>();
+builder.Services.AddScoped<YandexTestService>();
+
+// Yandex
+builder.Services.AddScoped<YandexService>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    return new YandexService(
+        folderId: config["YandexCloud:YandexId"], 
+        apiKey: config["YandexCloud:YandexKey"]
+    );
+});
+
 
 // Cors
 

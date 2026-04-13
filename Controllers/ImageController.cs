@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interfaces;
 using WebApi.Requests;
+using WebApi.Services;
 
 namespace WebApi.Controllers;
 
-public class ImageController
+public class ImageController: ControllerBase    
 {
     private readonly IImagesService _imagesService;
 
@@ -25,5 +27,12 @@ public class ImageController
     public Task<IActionResult> PostImageAsync([FromForm] CreateNewImage newImage)
     {
         return _imagesService.PostImageAsync(newImage);
+    }
+    
+    [HttpGet("test-yandex")]
+    public async Task<IActionResult> TestYandex([FromServices] YandexService service)
+    {
+        var result = await service.SendRequestAsync();
+        return Ok(new { answer = result });
     }
 }

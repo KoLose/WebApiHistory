@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "VdCFbeMmL7o=",
+  "dgSpecHash": "0Z3XN+WkZYk=",
   "success": true,
   "projectFilePath": "/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/WebApi.csproj",
   "expectedPackageFiles": [
@@ -37,6 +37,7 @@
     "/Users/kolose/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/kolose/.nuget/packages/postgrest-csharp/3.5.1/postgrest-csharp.3.5.1.nupkg.sha512",
     "/Users/kolose/.nuget/packages/realtime-csharp/6.0.4/realtime-csharp.6.0.4.nupkg.sha512",
+    "/Users/kolose/.nuget/packages/sixlabors.imagesharp/3.1.12/sixlabors.imagesharp.3.1.12.nupkg.sha512",
     "/Users/kolose/.nuget/packages/supabase-core/0.0.3/supabase-core.0.0.3.nupkg.sha512",
     "/Users/kolose/.nuget/packages/supabase-csharp/0.16.1/supabase-csharp.0.16.1.nupkg.sha512",
     "/Users/kolose/.nuget/packages/supabase-storage-csharp/1.4.0/supabase-storage-csharp.1.4.0.nupkg.sha512",

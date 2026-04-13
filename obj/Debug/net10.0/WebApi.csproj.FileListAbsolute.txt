@@ -194,3 +194,4 @@
 /Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/obj/Debug/net10.0/WebApi.pdb
 /Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/obj/Debug/net10.0/WebApi.genruntimeconfig.cache
 /Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/obj/Debug/net10.0/ref/WebApi.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/SixLabors.ImageSharp.dll
