@@ -23,7 +23,6 @@ public class ImageService : IImagesService
 
         var data = imageResponse.Models.Select(img => new ImageResponse
         {
-            Name = img.Name,
             ImageUrl = img.ImageUrl
         }).ToList();
         
@@ -58,7 +57,6 @@ public class ImageService : IImagesService
             var image = new Image
             {
                 Id = id,
-                Name = newImage.Name,
                 ImageUrl = url
             };
 

@@ -10,9 +10,10 @@ public class Image : BaseModel
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("name")]
-    public string Name { get; set; }
-
     [Column("image_url")]
     public string ImageUrl { get; set; }
+    
+    [Column("excel_url")]
+    public string ExcelUrl { get; set; }
+    
 }

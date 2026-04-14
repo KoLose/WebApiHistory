@@ -20,6 +20,8 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<IImagesService, ImageService>();
 builder.Services.AddScoped<YandexTestService>();
+builder.Services.AddScoped<YandexGeminiService>();
+builder.Services.AddScoped<ImageProcessingService>();
 
 // Yandex
 builder.Services.AddScoped<YandexService>(sp =>
