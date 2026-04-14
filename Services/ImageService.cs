@@ -23,7 +23,8 @@ public class ImageService : IImagesService
 
         var data = imageResponse.Models.Select(img => new ImageResponse
         {
-            ImageUrl = img.ImageUrl
+            ImageUrl = img.ImageUrl,
+            ExcelUrl = img.ExcelUrl
         }).ToList();
         
         return new OkObjectResult(new

@@ -193,3 +193,11 @@
 /Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/obj/Debug/net10.0/WebApi.pdb
 /Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/obj/Debug/net10.0/WebApi.genruntimeconfig.cache
 /Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/obj/Debug/net10.0/ref/WebApi.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/ClosedXML.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/ClosedXML.Parser.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/DocumentFormat.OpenXml.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/DocumentFormat.OpenXml.Framework.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/ExcelNumberFormat.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/RBush.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/SixLabors.Fonts.dll
+/Users/kolose/Development/ApiProjects/HistoryApp/WebApi/WebApi/bin/Debug/net10.0/System.IO.Packaging.dll
