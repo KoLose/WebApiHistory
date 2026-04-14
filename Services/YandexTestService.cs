@@ -38,6 +38,7 @@ public class YandexTestService
             if (response.IsSuccessStatusCode)
             {
                 var jsonDoc = JsonDocument.Parse(responseBody);
+                
                 if (jsonDoc.RootElement.TryGetProperty("output", out var output) &&
                     output.GetArrayLength() > 0 &&
                     output[0].TryGetProperty("content", out var contentArray) &&
@@ -46,7 +47,8 @@ public class YandexTestService
                 {
                     return text.GetString() ?? "Empty text";
                 }
-                return "Error: Text field not found in response";
+                
+                return $"Parse Error. Raw: {responseBody}";
             }
             else
             {
