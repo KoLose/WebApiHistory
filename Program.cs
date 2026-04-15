@@ -40,7 +40,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorWasm", policy =>
     {
-        policy.WithOrigins("http://localhost:5129")
+        policy.WithOrigins("http://localhost:5129", "https://kolose.github.io/BlazorHistory/")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
