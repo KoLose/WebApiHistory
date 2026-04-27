@@ -8,7 +8,7 @@ public class User: BaseModel
 {
     [PrimaryKey("user_id", false)]
     [Column("user_id")]
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
 
     [Column("user_name")]
     public string UserName { get; set; }

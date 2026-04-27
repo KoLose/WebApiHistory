@@ -162,7 +162,7 @@ public class UserService : IUserService
     public async Task<IActionResult> DeleteUserAsync(DeleteUser deleteUser)
     {
         var userResponse = await _supabaseClient.From<User>()       // Initialization user that has id of deleteUser     
-            .Where(u => u.UserId  == deleteUser.UserId)
+          //  .Where(u => u.UserId  == deleteUser.UserId)
             .Get();
         var user = userResponse.Models.FirstOrDefault();            // Creating variable for this user
         
