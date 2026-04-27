@@ -22,6 +22,7 @@ builder.Services.AddScoped<IImagesService, ImageService>();
 builder.Services.AddScoped<YandexTestService>();
 builder.Services.AddScoped<YandexGeminiService>();
 builder.Services.AddScoped<ImageProcessingService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Yandex
 builder.Services.AddScoped<YandexService>(sp =>
