@@ -27,7 +27,7 @@ public class YandexService
         {
             modelUri = modelUri,
             completionOptions = new { stream = false, temperature = 0, maxTokens = 6000 },
-            messages = new[] 
+            messages = new[]    
             { 
                 new { role = "user", text = prompt } 
             }

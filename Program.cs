@@ -24,6 +24,17 @@ builder.Services.AddScoped<YandexGeminiService>();
 builder.Services.AddScoped<ImageProcessingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IRequestService>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var supabase = sp.GetRequiredService<Supabase.Client>();
+    return new RequestService(
+        supabase,
+        config["YandexCloud:YandexId"],
+        config["YandexCloud:YandexKey"]
+    );
+});
+
 // Yandex
 builder.Services.AddScoped<YandexService>(sp =>
 {

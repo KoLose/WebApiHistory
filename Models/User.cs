@@ -18,10 +18,7 @@ public class User: BaseModel
     
     [Column("password")]
     public string Password { get; set; }
-
+    
     [Column("role_id")]
     public int RoleId { get; set; }
-    
-    public Role Role { get; set; }
-
 }
