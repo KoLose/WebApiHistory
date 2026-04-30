@@ -3,12 +3,12 @@ using Postgrest.Models;
 
 namespace WebApi.Models;
 
-[Table("image")]
+[Table("Request")]
 public class Request: BaseModel
 {
     [PrimaryKey("request_id", false)]
-    [Column("id")]
-    public int Id { get; set; }
+    [Column("request_id")]
+    public Guid Request_id { get; set; }
     
     [Column("image_url")]
     public string ImageUrl { get; set; }

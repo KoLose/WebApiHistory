@@ -10,15 +10,15 @@ using WebApi.Requests;
 
 namespace WebApi.Services;
 
-public class RequestService: IRequestService
+public class RequestService : IRequestService
 {
     private readonly Supabase.Client _supabaseClient;
 
     private readonly string _folderId;
     private readonly string _apiKey;
-    
-    private const string ModelName = "gemma-3-27b-it/latest"; 
-    
+
+    private const string ModelName = "gemma-3-27b-it/latest";
+
     public RequestService(Supabase.Client supabaseClient, string folderId, string apiKey)
     {
         _supabaseClient = supabaseClient;
@@ -29,7 +29,7 @@ public class RequestService: IRequestService
     public async Task<IActionResult> GetAndSaveImageAsync(CreateNewRequest newRequest)
     {
         await _supabaseClient.InitializeAsync();
-        
+
         try
         {
             if (newRequest != null)
@@ -50,42 +50,45 @@ public class RequestService: IRequestService
                     01.01.2024;1000;Зарплата
                     02.01.2024;500;Подарок";
 
-                string YandexAnswer = await SendRequest(textRequest, prompt);
+                string answer = await SendRequest(textRequest, prompt);
 
+                Console.WriteLine(answer);
                 byte[] excelBytes;
+
+                excelBytes = CreateExcelFromJson(answer);
+
+                var ext = Path.GetExtension(newRequest.File.FileName);
+
+                var imgPath = $"image/{Guid.NewGuid()}{ext}";
+                await _supabaseClient.Storage.From("storage").Upload(fileBytes, imgPath);
+                var imageUrl = $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/storage/{imgPath}";
+
+                Console.WriteLine(imageUrl);
+                Console.WriteLine(excelBytes);
                 
-                excelBytes = CreateExcel(YandexAnswer); // Call method that parse answer AI to Excel file
-                
-                if (YandexAnswer != null)
+                var excelPath = $"excel/{Guid.NewGuid()}.xlsx";
+                await _supabaseClient.Storage.From("storage").Upload(excelBytes, excelPath);
+                var excelUrl =
+                    $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/storage/{excelPath}";
+
+                Console.WriteLine(excelUrl);
+
+                var request = new Request()
                 {
-                    var ext = Path.GetExtension(newRequest.File.FileName);
-                    var imgPath = $"images/{Guid.NewGuid()}{ext}";
-                    await _supabaseClient.Storage.From("Storage").Upload(fileBytes, imgPath);
-                    var imageUrl =
-                        $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/Storage/{imgPath}";
+                    ImageUrl = imageUrl,
+                    ExcelUrl = excelUrl,
+                    UserId = newRequest.UserId
+                };
 
-                    var excelPath = $"excels/{Guid.NewGuid()}.xlsx";
-                    await _supabaseClient.Storage.From("Storage").Upload(excelBytes, excelPath);
-                    var excelUrl =
-                        $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/Storage/{excelPath}";
+                await _supabaseClient.From<Request>().Insert(request);
 
-                    var request = new Request()
+                return new OkObjectResult(new
                     {
-                        ImageUrl = imageUrl,
-                        ExcelUrl = excelUrl,
-                        UserId =  newRequest.UserId
-                    };
-                    
-                    await _supabaseClient.From<Request>().Insert(request);
-                    
-                    return new OkObjectResult(new
-                        {
-                            status = true,
-                        }
-                    );
-
-                }
+                        status = true,
+                    }
+                );
             }
+
             return new BadRequestObjectResult(new
                 {
                     status = false,
@@ -97,6 +100,8 @@ public class RequestService: IRequestService
             return new BadRequestObjectResult(new
                 {
                     status = false,
+                    error = e.Message,
+                    inner = e.InnerException?.Message
                 }
             );
         }
@@ -116,9 +121,9 @@ public class RequestService: IRequestService
                     content = new object[]
                     {
                         new { type = "text", text = prompt },
-                        new 
-                        { 
-                            type = "image_url", 
+                        new
+                        {
+                            type = "image_url",
                             image_url = new { url = textRequest }
                         }
                     }
@@ -127,15 +132,15 @@ public class RequestService: IRequestService
             temperature = 0,
             max_tokens = 1000
         };
-            
+
         var json = JsonSerializer.Serialize(requestBody);
-        
+
         using var httpClient = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
         request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            
+
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
-        
+
         try
         {
             var response = await httpClient.SendAsync(request);
@@ -145,16 +150,16 @@ public class RequestService: IRequestService
             {
                 return responseBody;
             }
-            
+
             var jsonDoc = JsonDocument.Parse(responseBody);
             string content = jsonDoc.RootElement
                 .GetProperty("choices")[0]
                 .GetProperty("message")
                 .GetProperty("content")
                 .GetString() ?? "";
-            
+
             string answer = Regex.Replace(content, @"^```json\s*|\s*```$", "", RegexOptions.Multiline).Trim();
-            
+
             return answer;
         }
         catch (Exception e)
@@ -163,27 +168,59 @@ public class RequestService: IRequestService
         }
     }
 
-    public byte[] CreateExcel(string text)
+    private byte[] CreateExcelFromJson(string json)
     {
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Data");
 
-        // Разбиваем по строкам
-        var lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        // Очищаем от markdown, если ИИ его добавил
+        string cleanJson = System.Text.RegularExpressions.Regex.Replace(json, @"^```\w*\s*|\s*```$", "",
+            System.Text.RegularExpressions.RegexOptions.Multiline).Trim();
 
-        for (int row = 0; row < lines.Length; row++)
+        try
         {
-            // Разбиваем каждую строку по точке с запятой
-            var columns = lines[row].Split(';');
-        
-            for (int col = 0; col < columns.Length; col++)
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            // Парсим как массив объектов
+            if (cleanJson.StartsWith("["))
             {
-                var cell = worksheet.Cell(row + 1, col + 1);
-                cell.Value = columns[col].Trim(); // Убираем пробелы
-            
-                if (row == 0) 
-                    cell.Style.Font.Bold = true; // Заголовки жирные
+                var data = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(cleanJson, options);
+
+                if (data != null && data.Count > 0)
+                {
+                    // Заголовки
+                    var headers = data[0].Keys.ToList();
+                    for (int i = 0; i < headers.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = headers[i];
+                        worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                    }
+
+                    // Данные
+                    for (int row = 0; row < data.Count; row++)
+                    {
+                        for (int col = 0; col < headers.Count; col++)
+                        {
+                            var key = headers[col];
+                            var value = data[row][key]?.ToString() ?? "";
+                            worksheet.Cell(row + 2, col + 1).Value = value;
+                        }
+                    }
+                }
             }
+            else
+            {
+                // Если пришел не массив, а один объект или ошибка
+                worksheet.Cell(1, 1).Value = "Raw Response";
+                worksheet.Cell(2, 1).Value = cleanJson;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Если JSON битый, пишем ошибку в Excel, чтобы не ронять весь запрос
+            worksheet.Cell(1, 1).Value = "JSON Parse Error";
+            worksheet.Cell(2, 1).Value = ex.Message;
+            worksheet.Cell(3, 1).Value = cleanJson;
         }
 
         using var stream = new MemoryStream();

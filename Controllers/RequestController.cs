@@ -15,10 +15,8 @@ public class RequestController: ControllerBase
 
     [HttpPost]
     [Route("PostRequest")]
-    public async Task<IActionResult> PostRequest(CreateNewRequest request)
+    public async Task<IActionResult> PostRequest([FromForm] CreateNewRequest request)
     {
         return await _requestService.GetAndSaveImageAsync(request);
     }
-    
-    
 }

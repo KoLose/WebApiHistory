@@ -35,6 +35,17 @@ builder.Services.AddScoped<IRequestService>(sp =>
     );
 });
 
+builder.Services.AddScoped<ITestRequestService>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var supabase = sp.GetRequiredService<Supabase.Client>();
+    return new TestRequestService(
+        supabase,
+        config["YandexCloud:YandexId"],
+        config["YandexCloud:YandexKey"]
+    );
+}); 
+
 // Yandex
 builder.Services.AddScoped<YandexService>(sp =>
 {
