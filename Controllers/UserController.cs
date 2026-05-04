@@ -41,4 +41,10 @@ public class UserController : ControllerBase
     {
         return await _userService.DeleteUserAsync(deleteUser);
     }
+    [HttpPatch]
+    [Route("PatchUserImage")]
+    public async Task<IActionResult> UploadAvatar([FromForm] PatchAvatarRequest request)
+    {
+        return await _userService.PatchAvatarAsync(request);
+    }
 }

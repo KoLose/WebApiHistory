@@ -19,6 +19,9 @@ public class User: BaseModel
     [Column("password")]
     public string Password { get; set; }
     
+    [Column("avatar_url")]
+    public string AvatarUrl { get; set; }
+    
     [Column("role_id")]
     public int RoleId { get; set; }
 }

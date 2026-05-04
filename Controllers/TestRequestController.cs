@@ -4,7 +4,7 @@ using WebApi.Requests;
 
 namespace WebApi.Controllers;
 
-public class TestRequestController
+public class TestRequestController: ControllerBase
 {
     private readonly ITestRequestService _testRequestService;
     
@@ -17,6 +17,11 @@ public class TestRequestController
     [Route("PostTestRequest")]
     public async Task<IActionResult> TestPostRequest([FromForm] CreateNewRequest newRequest)
     {
-        return await _testRequestService.GetAndSaveImageAsync(newRequest);
+        return await _testRequestService.PostRequestAsync(newRequest);
+    }
+    [HttpGet("GetAllImages")]
+    public async Task<IActionResult> GetAllImages([FromQuery] Guid userId)
+    {
+        return await _testRequestService.GetRequestsAsync(userId);
     }
 }

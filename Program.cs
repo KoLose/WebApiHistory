@@ -10,7 +10,7 @@ var supabaseKey = builder.Configuration["Supabase:Key"];
 
 var options = new SupabaseOptions
 {
-    AutoConnectRealtime = true
+    AutoConnectRealtime = false
 };
 
 builder.Services.AddScoped<Supabase.Client>(_ => 
@@ -18,8 +18,6 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
 
 // Controllers + services
 builder.Services.AddControllers();
-builder.Services.AddScoped<IImagesService, ImageService>();
-builder.Services.AddScoped<YandexTestService>();
 builder.Services.AddScoped<YandexGeminiService>();
 builder.Services.AddScoped<ImageProcessingService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -45,17 +43,6 @@ builder.Services.AddScoped<ITestRequestService>(sp =>
         config["YandexCloud:YandexKey"]
     );
 }); 
-
-// Yandex
-builder.Services.AddScoped<YandexService>(sp =>
-{
-    var config = sp.GetRequiredService<IConfiguration>();
-    return new YandexService(
-        folderId: config["YandexCloud:YandexId"], 
-        apiKey: config["YandexCloud:YandexKey"]
-    );
-});
-
 
 // Cors
 

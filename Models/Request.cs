@@ -6,7 +6,7 @@ namespace WebApi.Models;
 [Table("Request")]
 public class Request: BaseModel
 {
-    [PrimaryKey("request_id", false)]
+    [PrimaryKey("request_id", true)]
     [Column("request_id")]
     public Guid Request_id { get; set; }
     

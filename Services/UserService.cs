@@ -49,6 +49,7 @@ public class UserService : IUserService
             UserId = u.UserId,
             UserName = u.UserName,
             Mail = u.Mail,
+            AvatarUrl = u.AvatarUrl,
             RoleName = roles.FirstOrDefault(r => r.Key == u.RoleId).Value
         });
         
@@ -160,6 +161,7 @@ public class UserService : IUserService
                         userName = user.UserName,
                         mail = user.Mail,
                         password = user.Password,
+                        avatarUrl = user.AvatarUrl,
                         RoleName = roles.FirstOrDefault(r => r.Key == user.RoleId).Value,
                         status = true
                     });
@@ -259,6 +261,46 @@ public class UserService : IUserService
         catch (Exception)
         {
             return new BadRequestObjectResult(new { status = false });
+        }
+    }
+    
+    public async Task<IActionResult> PatchAvatarAsync(PatchAvatarRequest request)
+    {
+        try
+        {
+            using var stream = request.AvatarFile.OpenReadStream();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
+
+            var ext = Path.GetExtension(request.AvatarFile.FileName);
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var filePath = $"image/{fileName}";
+
+            await _supabaseClient.Storage.From("storage").Upload(fileBytes, filePath);
+
+            var newUrl = $"https://usumwizzaswjmiucesxo.supabase.co/storage/v1/object/public/storage/{filePath}";
+
+            var userResponse = await _supabaseClient.From<User>()
+                .Where(u => u.UserId == request.UserId)
+                .Get();
+
+            var user = userResponse.Models.FirstOrDefault();
+            if (user == null)
+                return new BadRequestObjectResult(new { status = false });
+
+            user.AvatarUrl = newUrl;
+            await _supabaseClient.From<User>().Update(user);
+
+            return new OkObjectResult(new { status = true, AvatarUrl = newUrl });
+        }
+        catch (Exception e)
+        {
+            return new BadRequestObjectResult(new
+            {
+                status = false,
+                error = e.Message
+            });
         }
     }
 }

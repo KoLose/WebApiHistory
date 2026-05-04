@@ -9,4 +9,5 @@ public interface IUserService
     Task<IActionResult> PostUserAsync(CreateNewUser newUser);
     Task<IActionResult> PatchUserAsync(UpdateUser updateUser);
     Task<IActionResult> DeleteUserAsync(DeleteUser deleteUser);
+    Task<IActionResult> PatchAvatarAsync(PatchAvatarRequest request);
 }

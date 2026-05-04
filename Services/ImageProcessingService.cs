@@ -26,19 +26,19 @@ public class ImageProcessingService
 
             await _supabaseClient.InitializeAsync();
 
-            // 1. Читаем файл
+            // 1. Read file
             using var stream = file.OpenReadStream();
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
             var fileBytes = ms.ToArray();
 
-            // 2. Сохраняем картинку в Storage
+            // 2. Save in storage
             var ext = Path.GetExtension(file.FileName);
             var imgPath = $"images/{Guid.NewGuid()}{ext}";
             await _supabaseClient.Storage.From("Storage").Upload(fileBytes, imgPath);
             var imageUrl = $"https://bccvmwlqehhsbldanwao.supabase.co/storage/v1/object/public/Storage/{imgPath}";
 
-            // 3. Отправляем в Яндекс
+            // 3. Post to yandex
             string base64WithPrefix = $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
             string prompt = @"Распознай таблицу на изображении. 
             Верни результат СТРОГО в формате JSON массива объектов. 
